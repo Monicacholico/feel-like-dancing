@@ -1,0 +1,97 @@
+---
+import type { Locale } from '../../lib/i18n';
+import { t, localePath } from '../../lib/i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  slug: string;
+  locale: Locale;
+  date: string;
+  readingTime?: number;
+  image?: string;
+}
+
+const { title, description, slug, locale, date, readingTime, image } = Astro.props;
+const href = localePath(locale, `/stories/${slug}`);
+const formattedDate = new Date(date).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-MX', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="story-card">
+  <a href={href} class="story-card-link">
+    {image && (
+      <div class="story-card-image">
+        <img src={image} alt="" loading="lazy" width="600" height="340" />
+      </div>
+    )}
+    <div class="story-card-body">
+      <h3 class="story-card-title">{title}</h3>
+      <p class="story-card-description">{description}</p>
+      <div class="story-card-meta">
+        <time datetime={date}>{formattedDate}</time>
+        {readingTime && <span>{readingTime} {t(locale, 'story.readTime')}</span>}
+      </div>
+    </div>
+  </a>
+</article>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+
+  .story-card {
+    background: $color-surface;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid $color-border;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+  }
+
+  .story-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .story-card-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+
+  .story-card-body {
+    padding: $spacing-sm $spacing-md;
+    padding-bottom: $spacing-md;
+  }
+
+  .story-card-title {
+    font-size: 1.25rem;
+    margin-bottom: $spacing-xs;
+  }
+
+  .story-card-description {
+    font-size: 0.9rem;
+    color: $color-text-light;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .story-card-meta {
+    display: flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-sm;
+    font-size: 0.8rem;
+    color: $color-text-light;
+  }
+</style>

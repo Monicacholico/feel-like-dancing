@@ -1,0 +1,107 @@
+---
+import type { Locale } from '../../lib/i18n';
+import { t, getAlternateLocale, localePath, localeName } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const altLocale = getAlternateLocale(locale);
+
+const stripLocalePrefix = (path: string): string => {
+  return path.replace(/^\/(en|es)/, '') || '/';
+};
+
+const altHref = localePath(altLocale, stripLocalePrefix(currentPath));
+---
+
+<nav class="site-nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href={localePath(locale)} class="nav-logo">
+      Feel Like Dancing
+    </a>
+    <ul class="nav-links" role="list">
+      <li>
+        <a href={localePath(locale, '/stories')} aria-current={currentPath.includes('/stories') ? 'page' : undefined}>
+          {t(locale, 'nav.stories')}
+        </a>
+      </li>
+      <li>
+        <a href="/tiendadeballet" rel="noopener">
+          {t(locale, 'nav.shop')}
+        </a>
+      </li>
+      <li class="nav-lang">
+        <a href={altHref} aria-label={`Switch to ${localeName[altLocale]}`}>
+          {localeName[altLocale]}
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+  @use '../../styles/mixins' as *;
+
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba($color-bg, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid $color-border;
+  }
+
+  .nav-inner {
+    @include site-width;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+  }
+
+  .nav-logo {
+    font-family: $font-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $color-text;
+    letter-spacing: -0.02em;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: $spacing-md;
+    list-style: none;
+    align-items: center;
+
+    a {
+      font-size: 0.9rem;
+      color: $color-text-light;
+      transition: color 0.2s ease;
+
+      &:hover,
+      &[aria-current='page'] {
+        color: $color-accent;
+      }
+    }
+  }
+
+  .nav-lang a {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid $color-border;
+    border-radius: 4px;
+    font-size: 0.8rem;
+
+    &:hover {
+      border-color: $color-accent;
+      color: $color-accent;
+    }
+  }
+</style>

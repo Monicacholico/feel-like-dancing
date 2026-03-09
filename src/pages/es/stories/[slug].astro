@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import StoryLayout from '../../../layouts/StoryLayout.astro';
+
+export async function getStaticPaths() {
+  const allStories = await getCollection('stories');
+  const esStories = allStories.filter((s) => s.data.locale === 'es');
+
+  return esStories.map((story) => {
+    const alternate = allStories.find(
+      (s) => s.data.storyId === story.data.storyId && s.data.locale === 'en',
+    );
+    return {
+      params: { slug: story.data.slug },
+      props: {
+        story,
+        alternatePaths: [
+          ...(alternate
+            ? [{ locale: 'en' as const, path: `/stories/${alternate.data.slug}` }]
+            : []),
+          { locale: 'es' as const, path: `/stories/${story.data.slug}` },
+        ],
+      },
+    };
+  });
+}
+
+const { story, alternatePaths } = Astro.props;
+const { Content } = await render(story);
+---
+
+<StoryLayout
+  title={story.data.title}
+  description={story.data.description}
+  locale="es"
+  slug={story.data.slug}
+  publishedDate={story.data.publishedDate}
+  modifiedDate={story.data.modifiedDate}
+  readingTime={story.data.readingTime}
+  ogImage={story.data.ogImage}
+  alternatePaths={alternatePaths}
+>
+  <Content />
+</StoryLayout>

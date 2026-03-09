@@ -1,0 +1,212 @@
+---
+import type { Locale } from '../lib/i18n';
+import SEOHead from '../components/astro/SEOHead.astro';
+import Nav from '../components/astro/Nav.astro';
+import Footer from '../components/astro/Footer.astro';
+import { t } from '../lib/i18n';
+import '../styles/global.scss';
+
+interface AlternatePath {
+  locale: Locale;
+  path: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+  slug: string;
+  publishedDate: string;
+  modifiedDate?: string;
+  readingTime?: number;
+  ogImage?: string;
+  alternatePaths?: AlternatePath[];
+}
+
+const {
+  title,
+  description,
+  locale,
+  slug,
+  publishedDate,
+  modifiedDate,
+  readingTime,
+  ogImage,
+  alternatePaths,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const canonicalPath = `/stories/${slug}`;
+
+const formattedDate = new Date(publishedDate).toLocaleDateString(
+  locale === 'en' ? 'en-US' : 'es-MX',
+  { year: 'numeric', month: 'long', day: 'numeric' },
+);
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: publishedDate,
+  ...(modifiedDate ? { dateModified: modifiedDate } : {}),
+  inLanguage: locale,
+  url: `https://www.feel-like-dancing.com/${locale}/stories/${slug}`,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Feel Like Dancing',
+    url: 'https://www.feel-like-dancing.com',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': `https://www.feel-like-dancing.com/${locale}/stories/${slug}`,
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: t(locale, 'nav.home'),
+      item: `https://www.feel-like-dancing.com/${locale}`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(locale, 'nav.stories'),
+      item: `https://www.feel-like-dancing.com/${locale}/stories`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <SEOHead
+      title={`${title} — Feel Like Dancing`}
+      description={description}
+      locale={locale}
+      canonicalPath={canonicalPath}
+      alternatePaths={alternatePaths}
+      type="article"
+      publishedDate={publishedDate}
+      modifiedDate={modifiedDate}
+      ogImage={ogImage}
+      schema={articleSchema}
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <Nav locale={locale} currentPath={currentPath} />
+    <main id="main-content">
+      <article class="story">
+        <header class="story-header">
+          <div class="story-header-inner">
+            <h1>{title}</h1>
+            <p class="story-description">{description}</p>
+            <div class="story-meta">
+              <time datetime={publishedDate}>{formattedDate}</time>
+              {readingTime && <span class="story-reading-time">{readingTime} {t(locale, 'story.readTime')}</span>}
+            </div>
+          </div>
+        </header>
+        <div class="story-content">
+          <slot />
+        </div>
+      </article>
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 0 0 4px 4px;
+    font-size: 0.9rem;
+
+    &:focus {
+      top: 0;
+    }
+  }
+
+  .story-header {
+    padding-block: $spacing-lg $spacing-md;
+    border-bottom: 1px solid $color-border;
+    margin-bottom: $spacing-lg;
+  }
+
+  .story-header-inner {
+    @include content-width;
+    text-align: center;
+
+    h1 {
+      margin-bottom: $spacing-sm;
+    }
+  }
+
+  .story-description {
+    font-size: 1.2rem;
+    color: $color-text-light;
+    max-width: 55ch;
+    margin-inline: auto;
+    margin-bottom: $spacing-sm;
+  }
+
+  .story-meta {
+    display: flex;
+    gap: $spacing-sm;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: $color-text-light;
+  }
+
+  .story-reading-time::before {
+    content: '·';
+    margin-right: $spacing-sm;
+  }
+
+  .story-content {
+    @include content-width;
+    padding-bottom: $spacing-xl;
+
+    :global(h2) {
+      margin-top: $spacing-lg;
+      margin-bottom: $spacing-sm;
+    }
+
+    :global(h3) {
+      margin-top: $spacing-md;
+      margin-bottom: $spacing-xs;
+    }
+
+    :global(p) {
+      margin-bottom: $spacing-sm;
+      font-size: 1.05rem;
+    }
+
+    :global(.wide) {
+      @include wide-width;
+      margin-block: $spacing-md;
+    }
+  }
+</style>

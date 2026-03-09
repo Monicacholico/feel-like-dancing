@@ -1,0 +1,29 @@
+@use 'variables' as *;
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) { @content; }
+  }
+}
+
+@mixin content-width {
+  max-width: $content-width;
+  margin-inline: auto;
+  padding-inline: $spacing-sm;
+}
+
+@mixin wide-width {
+  max-width: $wide-width;
+  margin-inline: auto;
+  padding-inline: $spacing-sm;
+}
+
+@mixin site-width {
+  max-width: $site-width;
+  margin-inline: auto;
+  padding-inline: $spacing-sm;
+}

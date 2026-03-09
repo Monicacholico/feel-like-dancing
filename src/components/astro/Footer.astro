@@ -1,0 +1,82 @@
+---
+import type { Locale } from '../../lib/i18n';
+import { t, localePath } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href={localePath(locale)} class="footer-logo">Feel Like Dancing</a>
+      <p>{t(locale, 'site.description')}</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul role="list">
+        <li><a href={localePath(locale, '/stories')}>{t(locale, 'nav.stories')}</a></li>
+        <li><a href="/tiendadeballet">{t(locale, 'nav.shop')}</a></li>
+      </ul>
+    </nav>
+    <p class="footer-copy">&copy; {year} Feel Like Dancing. {t(locale, 'footer.rights')}</p>
+  </div>
+</footer>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+  @use '../../styles/mixins' as *;
+
+  .site-footer {
+    margin-top: $spacing-xl;
+    padding-block: $spacing-lg;
+    border-top: 1px solid $color-border;
+    background-color: $color-surface;
+  }
+
+  .footer-inner {
+    @include site-width;
+  }
+
+  .footer-brand {
+    margin-bottom: $spacing-md;
+
+    p {
+      margin-top: $spacing-xs;
+      font-size: 0.9rem;
+      color: $color-text-light;
+      max-width: 40ch;
+    }
+  }
+
+  .footer-logo {
+    font-family: $font-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  .footer-nav ul {
+    display: flex;
+    gap: $spacing-md;
+    list-style: none;
+    margin-bottom: $spacing-md;
+
+    a {
+      font-size: 0.9rem;
+      color: $color-text-light;
+
+      &:hover {
+        color: $color-accent;
+      }
+    }
+  }
+
+  .footer-copy {
+    font-size: 0.8rem;
+    color: $color-text-light;
+  }
+</style>

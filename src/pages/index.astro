@@ -1,0 +1,78 @@
+---
+import { localePath, localeName, type Locale } from '../lib/i18n';
+
+const locales: Locale[] = ['en', 'es'];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Feel Like Dancing — Classical Ballet</title>
+    <meta name="description" content="Interactive stories, data visualization, and in-depth articles about classical ballet. Available in English and Spanish." />
+    <link rel="canonical" href="https://www.feel-like-dancing.com/" />
+    <link rel="alternate" hreflang="en" href="https://www.feel-like-dancing.com/en" />
+    <link rel="alternate" hreflang="es" href="https://www.feel-like-dancing.com/es" />
+    <link rel="alternate" hreflang="x-default" href="https://www.feel-like-dancing.com/en" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 100%; }
+      body {
+        font-family: Georgia, 'Times New Roman', serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #faf9f7;
+        color: #1a1a1a;
+      }
+      .splash {
+        text-align: center;
+        padding: 2rem;
+      }
+      .splash h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+      }
+      .splash p {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #5a5a5a;
+        font-size: 1.1rem;
+        margin-bottom: 2.5rem;
+      }
+      .lang-links {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+      }
+      .lang-links a {
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        border: 2px solid #8b4c6a;
+        border-radius: 6px;
+        color: #8b4c6a;
+        text-decoration: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 1rem;
+        transition: background-color 0.2s, color 0.2s;
+      }
+      .lang-links a:hover {
+        background: #8b4c6a;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="splash">
+      <h1>Feel Like Dancing</h1>
+      <p>The art and science of classical ballet</p>
+      <div class="lang-links">
+        {locales.map((loc) => (
+          <a href={localePath(loc)}>{localeName[loc]}</a>
+        ))}
+      </div>
+    </div>
+  </body>
+</html>
