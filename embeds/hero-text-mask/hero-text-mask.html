@@ -1,0 +1,183 @@
+<!--
+  HERO TEXT MASK — Feel Like Dancing
+  Self-contained component. Paste into a WordPress "Custom HTML" block.
+  Replace the background-image URL with your own image.
+-->
+<div class="fld-hero" id="fld-hero">
+  <div class="fld-hero__bg" aria-hidden="true"></div>
+  <div class="fld-hero__content">
+    <p class="fld-hero__eyebrow">Feel Like Dancing</p>
+    <h1 class="fld-hero__title">
+      <span class="fld-hero__title-line fld-hero__title-line--small">La mímica en el</span>
+      <span class="fld-hero__title-line fld-hero__title-line--large">BALLET</span>
+      <span class="fld-hero__title-line fld-hero__title-line--large">CLÁSICO</span>
+    </h1>
+    <p class="fld-hero__subtitle">Un lenguaje silencioso que ha contado historias durante siglos</p>
+    <div class="fld-hero__scroll" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="fld-hero__scroll-line"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fld-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #0a0a0a;
+    color: #faf9f7;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  .fld-hero__bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1518834107591-1c3f9e2b6b44?w=1400&q=80');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.25;
+    transform: scale(1.1);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fld-hero.is-visible .fld-hero__bg {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  .fld-hero__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    max-width: 900px;
+  }
+
+  .fld-hero__eyebrow {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    opacity: 0;
+    transform: translateY(20px);
+    margin-bottom: 2rem;
+    color: #c48da6;
+  }
+
+  .fld-hero__title {
+    margin: 0;
+    line-height: 0.9;
+    opacity: 1;
+  }
+
+  .fld-hero__title-line {
+    display: block;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .fld-hero__title-line--small {
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .fld-hero__title-line--large {
+    font-size: clamp(4rem, 14vw, 11rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.85;
+  }
+
+  .fld-hero__subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    color: #c48da6;
+    margin-top: 2.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    max-width: 40ch;
+    margin-inline: auto;
+    line-height: 1.6;
+  }
+
+  .fld-hero__scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+  }
+
+  .fld-hero__scroll span {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #faf9f7;
+  }
+
+  .fld-hero__scroll-line {
+    width: 1px;
+    height: 40px;
+    background: #faf9f7;
+    transform-origin: top;
+    animation: fld-scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes fld-scroll-pulse {
+    0%, 100% { transform: scaleY(1); opacity: 1; }
+    50% { transform: scaleY(0.5); opacity: 0.3; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fld-hero__scroll-line { animation: none; }
+    .fld-hero__eyebrow,
+    .fld-hero__title-line,
+    .fld-hero__subtitle,
+    .fld-hero__scroll {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function() {
+  var hero = document.getElementById('fld-hero');
+  if (!hero) return;
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReduced) {
+    hero.classList.add('is-visible');
+    return;
+  }
+
+  var tl = gsap.timeline({ delay: 0.3 });
+
+  tl.to(hero.querySelector('.fld-hero__eyebrow'), {
+    opacity: 1, y: 0, duration: 0.8, ease: 'power2.out'
+  })
+  .to(hero.querySelectorAll('.fld-hero__title-line'), {
+    opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: 0.15
+  }, '-=0.4')
+  .to(hero.querySelector('.fld-hero__subtitle'), {
+    opacity: 1, y: 0, duration: 0.8, ease: 'power2.out'
+  }, '-=0.5')
+  .to(hero.querySelector('.fld-hero__scroll'), {
+    opacity: 1, duration: 0.6, ease: 'power2.out'
+  }, '-=0.3')
+  .add(function() { hero.classList.add('is-visible'); }, '-=0.8');
+})();
+</script>

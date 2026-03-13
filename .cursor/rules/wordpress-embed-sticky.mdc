@@ -1,0 +1,48 @@
+---
+description: WordPress embed patterns for position:sticky scrollytelling and full-width breakout
+globs: embeds/**/*.html
+alwaysApply: false
+---
+
+# WordPress Embed: Sticky Fix & Breakout
+
+## position:sticky inside WordPress
+
+CSS `position: sticky` breaks when ANY ancestor has `overflow: hidden/auto/scroll`. WordPress themes always have these. Add this JS snippet to walk up the DOM and clear them:
+
+```javascript
+var scrolly = document.getElementById('fld-scrolly-ID');
+if (scrolly) {
+  var el = scrolly.parentElement;
+  while (el && el !== document.documentElement) {
+    var ov = window.getComputedStyle(el).overflow;
+    if (ov === 'hidden' || ov === 'auto' || ov === 'scroll') {
+      el.style.overflow = 'visible';
+    }
+    var ovX = window.getComputedStyle(el).overflowX;
+    var ovY = window.getComputedStyle(el).overflowY;
+    if (ovX === 'hidden') el.style.overflowX = 'visible';
+    if (ovY === 'hidden') el.style.overflowY = 'visible';
+    el = el.parentElement;
+  }
+}
+```
+
+## Full-width breakout
+
+WordPress content sits inside a max-width container. Force full-width with:
+
+```css
+.fld-article {
+  position: relative !important;
+  width: 100vw !important;
+  left: 50% !important;
+  margin-left: -50vw !important;
+}
+```
+
+## CSS conflict prevention
+
+- Prefix all classes with `fld-` to avoid WordPress theme collisions
+- Use `!important` on layout-critical properties (display, position, width, flex)
+- Use box-sizing reset on the wrapper: `.fld-article *, .fld-article *::before, .fld-article *::after { box-sizing: border-box !important; }`

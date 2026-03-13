@@ -1,0 +1,238 @@
+<!--
+  SCROLLY BLOCK — Feel Like Dancing
+  Self-contained scrollytelling component. Paste into a WordPress "Custom HTML" block.
+  
+  Usage: Each .fld-scrolly__step has a data-image attribute pointing to an image URL.
+  As the user scrolls, the sticky image swaps and the active step highlights.
+  Replace image URLs and text content with your own.
+-->
+<div class="fld-scrolly" id="fld-scrolly-demo">
+  <div class="fld-scrolly__sticky">
+    <div class="fld-scrolly__image-wrap">
+      <img class="fld-scrolly__image" src="" alt="" loading="lazy" />
+      <div class="fld-scrolly__image-label"></div>
+    </div>
+  </div>
+  <div class="fld-scrolly__steps">
+    <div class="fld-scrolly__step" data-image="https://placehold.co/600x700/1a1a1a/faf9f7?text=Image+1" data-label="Step 1">
+      <div class="fld-scrolly__step-inner">
+        <h3>Step Title</h3>
+        <p>Step description goes here. This text scrolls while the image stays fixed.</p>
+      </div>
+    </div>
+    <div class="fld-scrolly__step" data-image="https://placehold.co/600x700/1a1a1a/faf9f7?text=Image+2" data-label="Step 2">
+      <div class="fld-scrolly__step-inner">
+        <h3>Step Title</h3>
+        <p>Another step with different content and a different image.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fld-scrolly {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 1080px;
+    margin: 4rem auto;
+    padding: 0 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1a1a1a;
+  }
+
+  .fld-scrolly__sticky {
+    position: sticky;
+    top: 5rem;
+    height: fit-content;
+    align-self: start;
+  }
+
+  .fld-scrolly__image-wrap {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f0eeeb;
+    aspect-ratio: 6 / 7;
+  }
+
+  .fld-scrolly__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .fld-scrolly__image.is-loaded {
+    opacity: 1;
+  }
+
+  .fld-scrolly__image-label {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .fld-scrolly__image-label.is-visible {
+    opacity: 1;
+  }
+
+  .fld-scrolly__steps {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fld-scrolly__step {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .fld-scrolly__step-inner {
+    max-width: 38ch;
+    opacity: 0.2;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .fld-scrolly__step.is-active .fld-scrolly__step-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fld-scrolly__step-inner h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.5rem;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.2;
+    color: #1a1a1a;
+  }
+
+  .fld-scrolly__step-inner p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #5a5a5a;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .fld-scrolly__step-inner p:last-child {
+    margin-bottom: 0;
+  }
+
+  .fld-scrolly__step-inner em {
+    color: #8b4c6a;
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .fld-scrolly {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .fld-scrolly__sticky {
+      position: relative;
+      top: 0;
+      margin-bottom: 2rem;
+    }
+
+    .fld-scrolly__image-wrap {
+      aspect-ratio: 16 / 10;
+    }
+
+    .fld-scrolly__step {
+      min-height: auto;
+      padding: 1.5rem 0;
+    }
+
+    .fld-scrolly__step-inner {
+      opacity: 1;
+      transform: none;
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fld-scrolly__step-inner {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .fld-scrolly__image {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+(function() {
+  document.querySelectorAll('.fld-scrolly').forEach(function(container) {
+    var img = container.querySelector('.fld-scrolly__image');
+    var label = container.querySelector('.fld-scrolly__image-label');
+    var steps = container.querySelectorAll('.fld-scrolly__step');
+    if (!img || !steps.length) return;
+
+    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) {
+      steps.forEach(function(step) {
+        step.classList.add('is-active');
+      });
+      var firstImage = steps[0].getAttribute('data-image');
+      if (firstImage) {
+        img.src = firstImage;
+        img.alt = steps[0].getAttribute('data-label') || '';
+        img.classList.add('is-loaded');
+      }
+      return;
+    }
+
+    function setImage(step) {
+      var src = step.getAttribute('data-image');
+      var alt = step.getAttribute('data-label') || '';
+      if (!src || img.src === src) return;
+      img.classList.remove('is-loaded');
+      var newImg = new Image();
+      newImg.onload = function() {
+        img.src = src;
+        img.alt = alt;
+        img.classList.add('is-loaded');
+        if (label && alt) {
+          label.textContent = alt;
+          label.classList.add('is-visible');
+        }
+      };
+      newImg.src = src;
+    }
+
+    setImage(steps[0]);
+    steps[0].classList.add('is-active');
+
+    var observers = [];
+    steps.forEach(function(step) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            steps.forEach(function(s) { s.classList.remove('is-active'); });
+            step.classList.add('is-active');
+            setImage(step);
+          }
+        });
+      }, { rootMargin: '-35% 0px -35% 0px', threshold: 0 });
+      observer.observe(step);
+      observers.push(observer);
+    });
+  });
+})();
+</script>
