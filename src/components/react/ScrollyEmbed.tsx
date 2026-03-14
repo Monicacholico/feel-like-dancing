@@ -22,12 +22,6 @@ export default function ScrollyEmbed({ steps }: Props) {
     const stepsEls = containerRef.current?.querySelectorAll<HTMLElement>('.sce-step');
     if (!stepsEls) return;
 
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    if (isMobile) {
-      stepsEls.forEach((el) => el.classList.add('is-active'));
-      return;
-    }
-
     const observers: IntersectionObserver[] = [];
     stepsEls.forEach((el, i) => {
       const obs = new IntersectionObserver(
@@ -96,6 +90,12 @@ export default function ScrollyEmbed({ steps }: Props) {
       <div className="sce-steps">
         {steps.map((step, i) => (
           <div key={i} className="sce-step">
+            <img
+              className="sce-step-img"
+              src={step.imageSrc || `https://placehold.co/600x700/f0eeeb/8b4c6a?text=${encodeURIComponent(step.title)}`}
+              alt={step.imageAlt}
+              loading="lazy"
+            />
             <div className="sce-step-inner">
               <h3>{step.title}</h3>
               <p>{step.text}</p>

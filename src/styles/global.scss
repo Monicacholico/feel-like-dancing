@@ -230,8 +230,7 @@ img {
   padding-inline: $spacing-sm;
 
   @media (max-width: $breakpoint-md) {
-    grid-template-columns: 1fr;
-    gap: 0;
+    display: block;
   }
 }
 
@@ -242,9 +241,7 @@ img {
   align-self: start;
 
   @media (max-width: $breakpoint-md) {
-    position: relative;
-    top: 0;
-    margin-bottom: $spacing-md;
+    display: none;
   }
 }
 
@@ -254,10 +251,6 @@ img {
   overflow: hidden;
   background: #f0eeeb;
   aspect-ratio: 6 / 7;
-
-  @media (max-width: $breakpoint-md) {
-    aspect-ratio: 16 / 10;
-  }
 }
 
 .sce-image {
@@ -291,8 +284,28 @@ img {
   padding: $spacing-md 0;
 
   @media (max-width: $breakpoint-md) {
+    display: block;
     min-height: auto;
-    padding: $spacing-sm 0;
+    padding: $spacing-md 0;
+    border-bottom: 1px solid #e5e2de;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.sce-step-img {
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: $spacing-sm;
+    background: #f0eeeb;
   }
 }
 
